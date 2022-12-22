@@ -23,8 +23,9 @@
     "url": "https://github.com/marcellkiss/rxjs-observable-queue/issues"
   },
   "homepage": "https://github.com/marcellkiss/rxjs-observable-queue#readme",
-  "dependencies": {
-    "rxjs": "^7.8.0"
+  "dependencies": {},
+  "peerDependencies": {
+    "rxjs": ">=6.0.0"
   },
   "devDependencies": {
     "@types/jest": "^29.2.4",

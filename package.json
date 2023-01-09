@@ -10,7 +10,8 @@
   },
   "scripts": {
     "test": "jest",
-    "build": "rm -rf dist && tsc && npm run build:cjs",
+    "build": "rm -rf dist && npm run build:esm && npm run build:cjs",
+    "build:esm": "tsc",
     "build:cjs": "tsc --project tsconfig.cjs.json",
     "watch": "tsc --watch"
   },

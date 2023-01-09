@@ -1,23 +1,20 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.ObservableQueue = void 0;
-const rxjs_1 = require("rxjs");
-class ObservableQueue {
+import { filter, first, map, Observable, ReplaySubject } from 'rxjs';
+export class ObservableQueue {
     constructor() {
         this.queue = [];
-        this.itemResponse$ = new rxjs_1.ReplaySubject();
-        this.itemError$ = new rxjs_1.ReplaySubject();
+        this.itemResponse$ = new ReplaySubject();
+        this.itemError$ = new ReplaySubject();
     }
     nextItemResponseById$(id) {
-        return this.itemResponse$.pipe((0, rxjs_1.filter)((itemResponse) => {
+        return this.itemResponse$.pipe(filter((itemResponse) => {
             return itemResponse.id === id;
-        }), (0, rxjs_1.map)((itemResponse) => itemResponse.response), (0, rxjs_1.first)());
+        }), map((itemResponse) => itemResponse.response), first());
     }
     nextErrorResponseById$(id) {
-        return this.itemError$.pipe((0, rxjs_1.filter)((itemError) => itemError.id === id), (0, rxjs_1.map)((itemError) => itemError.error), (0, rxjs_1.first)());
+        return this.itemError$.pipe(filter((itemError) => itemError.id === id), map((itemError) => itemError.error), first());
     }
     getObservableById$(id) {
-        return new rxjs_1.Observable((subscriber) => {
+        return new Observable((subscriber) => {
             this.nextItemResponseById$(id).subscribe((res) => {
                 subscriber.next(res);
             });
@@ -48,4 +45,3 @@ class ObservableQueue {
         });
     }
 }
-exports.ObservableQueue = ObservableQueue;

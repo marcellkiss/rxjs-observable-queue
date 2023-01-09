@@ -9,6 +9,7 @@
     }
   },
   "scripts": {
+    "validate": "npm run test && npm run build",
     "test": "jest",
     "build": "rm -rf dist && npm run build:esm && npm run build:cjs",
     "build:esm": "tsc --project tsconfig.json",

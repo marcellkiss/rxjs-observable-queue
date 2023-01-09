@@ -4,8 +4,8 @@
   "description": "Add rxjs observables to the queue and let them be executed sequentially.",
   "exports": {
     ".": {
-      "import": "./dist/esm/index.js",
-      "require": "./dist/cjs/index.js"
+      "require": "./dist/cjs/index.js",
+      "default": "./dist/esm/index.js"
     }
   },
   "scripts": {

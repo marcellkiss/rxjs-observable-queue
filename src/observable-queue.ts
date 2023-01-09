@@ -1,4 +1,4 @@
-import { filter, first, map, Observable, ReplaySubject } from 'rxjs';
+import { filter, first, map, Observable, ReplaySubject } from "rxjs";
 
 export class ObservableQueue<ResponseType = unknown, ErrorType = unknown> {
   private queue: QueueItem<ResponseType>[] = [];
@@ -7,28 +7,28 @@ export class ObservableQueue<ResponseType = unknown, ErrorType = unknown> {
 
   private nextItemResponseById$(id: string): Observable<ResponseType> {
     return this.itemResponse$.pipe(
-      filter((itemResponse) => {
+      filter((itemResponse: ItemResponse<ResponseType>) => {
         return itemResponse.id === id;
       }),
-      map((itemResponse) => itemResponse.response),
+      map((itemResponse: ItemResponse<ResponseType>) => itemResponse.response),
       first()
     );
   }
 
   private nextErrorResponseById$(id: string): Observable<ErrorType> {
     return this.itemError$.pipe(
-      filter((itemError) => itemError.id === id),
-      map((itemError) => itemError.error),
+      filter((itemError: ItemError<ErrorType>) => itemError.id === id),
+      map((itemError: ItemError<ErrorType>) => itemError.error),
       first()
     );
   }
 
   private getObservableById$(id: string): Observable<ResponseType> {
     return new Observable((subscriber) => {
-      this.nextItemResponseById$(id).subscribe((res) => {
+      this.nextItemResponseById$(id).subscribe((res: ResponseType) => {
         subscriber.next(res);
       });
-      this.nextErrorResponseById$(id).subscribe((error) =>
+      this.nextErrorResponseById$(id).subscribe((error: ErrorType) =>
         subscriber.error(error)
       );
     });
@@ -50,12 +50,12 @@ export class ObservableQueue<ResponseType = unknown, ErrorType = unknown> {
 
   private processNextItem() {
     this.queue.at(0)?.observable.subscribe({
-      next: (response) => {
+      next: (response: ResponseType) => {
         this.itemResponse$.next({ id: this.queue[0].id, response });
         this.queue.shift();
         this.processNextItem();
       },
-      error: (error) => {
+      error: (error: ErrorType) => {
         this.itemError$.next({ id: this.queue[0].id, error });
         this.queue = [];
       },

@@ -10,8 +10,7 @@ export class ObservableQueue<ResponseType = unknown, ErrorType = unknown> {
       filter((itemResponse: ItemResponse<ResponseType>) => {
         return itemResponse.id === id;
       }),
-      map((itemResponse: ItemResponse<ResponseType>) => itemResponse.response),
-      first()
+      map((itemResponse: ItemResponse<ResponseType>) => itemResponse.response)
     );
   }
 
@@ -52,12 +51,14 @@ export class ObservableQueue<ResponseType = unknown, ErrorType = unknown> {
     this.queue.at(0)?.observable.subscribe({
       next: (response: ResponseType) => {
         this.itemResponse$.next({ id: this.queue[0].id, response });
-        this.queue.shift();
-        this.processNextItem();
       },
       error: (error: ErrorType) => {
         this.itemError$.next({ id: this.queue[0].id, error });
         this.queue = [];
+      },
+      complete: () => {
+        this.queue.shift();
+        this.processNextItem();
       },
     });
   }

@@ -6,7 +6,7 @@ export class ObservableQueue {
     nextItemResponseById$(id) {
         return this.itemResponse$.pipe(filter((itemResponse) => {
             return itemResponse.id === id;
-        }), map((itemResponse) => itemResponse.response), first());
+        }), map((itemResponse) => itemResponse.response));
     }
     nextErrorResponseById$(id) {
         return this.itemError$.pipe(filter((itemError) => itemError.id === id), map((itemError) => itemError.error), first());
@@ -32,12 +32,14 @@ export class ObservableQueue {
         this.queue.at(0)?.observable.subscribe({
             next: (response) => {
                 this.itemResponse$.next({ id: this.queue[0].id, response });
-                this.queue.shift();
-                this.processNextItem();
             },
             error: (error) => {
                 this.itemError$.next({ id: this.queue[0].id, error });
                 this.queue = [];
+            },
+            complete: () => {
+                this.queue.shift();
+                this.processNextItem();
             },
         });
     }

@@ -9,7 +9,7 @@ class ObservableQueue {
     nextItemResponseById$(id) {
         return this.itemResponse$.pipe((0, rxjs_1.filter)((itemResponse) => {
             return itemResponse.id === id;
-        }), (0, rxjs_1.map)((itemResponse) => itemResponse.response), (0, rxjs_1.first)());
+        }), (0, rxjs_1.map)((itemResponse) => itemResponse.response));
     }
     nextErrorResponseById$(id) {
         return this.itemError$.pipe((0, rxjs_1.filter)((itemError) => itemError.id === id), (0, rxjs_1.map)((itemError) => itemError.error), (0, rxjs_1.first)());
@@ -35,12 +35,14 @@ class ObservableQueue {
         this.queue.at(0)?.observable.subscribe({
             next: (response) => {
                 this.itemResponse$.next({ id: this.queue[0].id, response });
-                this.queue.shift();
-                this.processNextItem();
             },
             error: (error) => {
                 this.itemError$.next({ id: this.queue[0].id, error });
                 this.queue = [];
+            },
+            complete: () => {
+                this.queue.shift();
+                this.processNextItem();
             },
         });
     }

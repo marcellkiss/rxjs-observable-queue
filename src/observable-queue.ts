@@ -10,27 +10,32 @@ export class ObservableQueue<ResponseType = unknown, ErrorType = unknown> {
       filter((itemResponse: ItemResponse<ResponseType>) => {
         return itemResponse.id === id;
       }),
-      map((itemResponse: ItemResponse<ResponseType>) => itemResponse.response),
-      first()
+      map((itemResponse: ItemResponse<ResponseType>) => itemResponse.response)
     );
   }
 
   private nextErrorResponseById$(id: string): Observable<ErrorType> {
     return this.itemError$.pipe(
       filter((itemError: ItemError<ErrorType>) => itemError.id === id),
-      map((itemError: ItemError<ErrorType>) => itemError.error),
-      first()
+      map((itemError: ItemError<ErrorType>) => itemError.error)
     );
   }
 
   private getObservableById$(id: string): Observable<ResponseType> {
     return new Observable((subscriber) => {
-      this.nextItemResponseById$(id).subscribe((res: ResponseType) => {
-        subscriber.next(res);
-      });
-      this.nextErrorResponseById$(id).subscribe((error: ErrorType) =>
-        subscriber.error(error)
-      );
+      this.nextItemResponseById$(id)
+        .pipe(first())
+        .subscribe((res: ResponseType) => {
+          subscriber.next(res);
+          subscriber.complete();
+        });
+
+      this.nextErrorResponseById$(id)
+        .pipe(first())
+        .subscribe((error: ErrorType) => {
+          subscriber.error(error);
+          subscriber.complete();
+        });
     });
   }
 

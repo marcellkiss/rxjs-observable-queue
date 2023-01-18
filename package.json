@@ -1,6 +1,6 @@
 {
   "name": "rxjs-observable-queue",
-  "version": "1.0.16",
+  "version": "1.0.17",
   "description": "Add rxjs observables to the queue and let them be executed sequentially.",
   "typings": "./dist/esm/index.d.ts",
   "exports": {

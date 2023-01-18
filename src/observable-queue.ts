@@ -10,7 +10,8 @@ export class ObservableQueue<ResponseType = unknown, ErrorType = unknown> {
       filter((itemResponse: ItemResponse<ResponseType>) => {
         return itemResponse.id === id;
       }),
-      map((itemResponse: ItemResponse<ResponseType>) => itemResponse.response)
+      map((itemResponse: ItemResponse<ResponseType>) => itemResponse.response),
+      first()
     );
   }
 

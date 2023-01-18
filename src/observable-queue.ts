@@ -43,14 +43,13 @@ export class ObservableQueue<ResponseType = unknown, ErrorType = unknown> {
     observable: Observable<ResponseType>
   ): Observable<ResponseType> {
     const id = `${Math.random()}`;
-    const result$ = this.getObservableById$(id);
 
     this.queue.push({ observable, id });
     if (this.queue.length === 1) {
       this.processNextItem();
     }
 
-    return result$;
+    return this.getObservableById$(id);
   }
 
   private processNextItem() {

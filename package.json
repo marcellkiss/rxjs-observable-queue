@@ -2,11 +2,15 @@
   "name": "rxjs-observable-queue",
   "version": "1.0.17",
   "description": "Add rxjs observables to the queue and let them be executed sequentially.",
-  "typings": "./dist/esm/index.d.ts",
+  "typings": "./dist/esm/observable-queue.d.ts",
+  "type": "module",
+  "main": "./dist/cjs/observable-queue.js",
+  "module": "./dist/esm/observable-queue.js",
   "exports": {
     ".": {
-      "require": "./dist/cjs/index.js",
-      "import": "./dist/esm/index.js"
+      "require": "./dist/cjs/observable-queue.js",
+      "import": "./dist/esm/observable-queue.js",
+      "default": "./dist/esm/observable-queue.js"
     }
   },
   "scripts": {

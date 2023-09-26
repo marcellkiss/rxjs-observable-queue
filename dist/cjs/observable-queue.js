@@ -12,24 +12,31 @@ class ObservableQueue {
         }), (0, rxjs_1.map)((itemResponse) => itemResponse.response));
     }
     nextErrorResponseById$(id) {
-        return this.itemError$.pipe((0, rxjs_1.filter)((itemError) => itemError.id === id), (0, rxjs_1.map)((itemError) => itemError.error), (0, rxjs_1.first)());
+        return this.itemError$.pipe((0, rxjs_1.filter)((itemError) => itemError.id === id), (0, rxjs_1.map)((itemError) => itemError.error));
     }
     getObservableById$(id) {
         return new rxjs_1.Observable((subscriber) => {
-            this.nextItemResponseById$(id).subscribe((res) => {
+            this.nextItemResponseById$(id)
+                .pipe((0, rxjs_1.first)())
+                .subscribe((res) => {
                 subscriber.next(res);
+                subscriber.complete();
             });
-            this.nextErrorResponseById$(id).subscribe((error) => subscriber.error(error));
+            this.nextErrorResponseById$(id)
+                .pipe((0, rxjs_1.first)())
+                .subscribe((error) => {
+                subscriber.error(error);
+                subscriber.complete();
+            });
         });
     }
     addItem(observable) {
         const id = `${Math.random()}`;
-        const result$ = this.getObservableById$(id);
         this.queue.push({ observable, id });
         if (this.queue.length === 1) {
             this.processNextItem();
         }
-        return result$;
+        return this.getObservableById$(id);
     }
     processNextItem() {
         this.queue.at(0)?.observable.subscribe({

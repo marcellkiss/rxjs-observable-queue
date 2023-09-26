@@ -1,1 +1,1 @@
-export * from "./observable-queue";
+export { ObservableQueue } from "./observable-queue";
